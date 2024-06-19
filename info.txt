@@ -1,6 +1,8 @@
+0012 продолжение 0011 - постановка задачи Razor pages + dotnet core webApi project
 
-
+исходники:
 https://github.com/illicchpv/dotnet-core-webapi
+
 
 ================================================
 0011 продолжение 0010 - Razor pages + dotnet core webApi project
