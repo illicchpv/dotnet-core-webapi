@@ -1,0 +1,256 @@
+
+
+https://github.com/illicchpv/dotnet-core-webapi
+
+================================================
+0011 продолжение 0010 - Razor pages + dotnet core webApi project
+Razor pages,Validation,FluentValidation,refactoring,static files,serilog,publish,iis,VSCode,dotnet,EntityFramework,InMemory,CSharp,git,HttpClient,REST,WebApi,vscode-solution-explorer,Codeium
+
+builder.Services.AddRazorPages();
+...
+app.UseRouting();
+app.MapRazorPages();
+
+app.AddEndPointsProduct();
+
+app.Run();
+
+--- pages index.cshtml
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Index page";
+}
+@section atHeaderEnd {
+    <link href="~/css/index1.css" rel="stylesheet">
+}
+@* ----------------👇-попадёт RenderBody-------------- *@
+... 
+
+<p>@IndexModel.getAplusB(101, 201)</p>
+...
+--- pages _ViewImports.cshtml
+@using TestClass_namespace
+--- pages _ViewStart.cshtml
+@{ Layout = "shared/_layout"; }
+--- pages/shared/_layout.cshtml
+    @RenderSection("atHeaderEnd", required: false)
+    @RenderBody()
+
+================================================
+0010 продолжение 0009 - ВОЗВРАТ к стандарту dotnet core webApi project
+
+Validation,FluentValidation,refactoring,static files,serilog,publish,iis,VSCode,dotnet,EntityFramework,InMemory,CSharp,git,HttpClient,REST,WebApi,vscode-solution-explorer,Codeium
+
+см. [0009 продолжение 0008 - validation dotnet core webApi project](https://youtu.be/HwjjxQre3-g)
+
+отказался от не стандартного старта приложения.
+убрал мусор.
+готовлю проект к поддержке динамических серверных страниц 
+/Razor Pages/
+
+================================================
+продолжение 0008 - validation dotnet core webApi project
+validation dotnet core FluentValidation+
+
+Validation,FluentValidation,refactoring,static files,serilog,publish,iis,VSCode,dotnet,EntityFramework,InMemory,CSharp,git,HttpClient,REST,WebApi,vscode-solution-explorer,Codeium
+
+FluentValidation.AspNetCore
+
+public class ProductValidator : AbstractValidator<Product>
+{
+    public ProductValidator()
+    {
+        RuleFor(x => x.Name).NotEmpty().MaximumLength(8).MinimumLength(4)
+            .Must(nam => Regex.IsMatch(nam, "^[A-ZА-Я][a-zа-я]+$"))
+            .WithMessage("Название должно быть не меньше 4 и не больше 8 букв и начинаться с заглавной.");
+        RuleFor(x => x.Price).GreaterThan(10).WithMessage("Только За деньги (>10) да");
+        RuleFor(x => x.BuyerEmail).EmailAddress().WithMessage("Инвалидный Email");
+    }
+    ...
+
+builder.Services.AddValidatorsFromAssemblyContaining(typeof(ProductValidator));
+
+app.MapPost("/product", async (IValidator<Product> validator, [FromBody] Product _product, InMemoryDbContext context) =>
+...
+    var validation = await validator.ValidateAsync(product);
+    if (!validation.IsValid)
+        return Results.ValidationProblem(validation.ToDictionary());
+
+
+продолжение 0007 - refactoring dotnet core webApi project
+
+refactoring,static files,serilog,publish,iis,VSCode,dotnet,EntityFramework,InMemory,CSharp,git,HttpClient,REST,WebApi,vscode-solution-explorer,Codeium
+
+{
+    var src = Path.Combine(Directory.GetCurrentDirectory(), "www_root");
+    var dst = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+    if (Directory.Exists(dst)) Directory.Delete(dst, true);
+    Directory.Move(src, dst);
+}
+// ---------------UseDefaultFiles-------------------------------------------
+{
+    DefaultFilesOptions options = new DefaultFilesOptions();
+    options.DefaultFileNames.Clear();
+    options.DefaultFileNames.Add("index.html");
+    app.UseDefaultFiles(options);
+}
+
+EndPointsProduct.cs
+public static class EndPointsProduct
+{
+
+    public static void AddEndPointsProduct(this WebApplication app)
+    {
+      ...
+
+продолжение 0006 - static files in dotnet core webApi in IIS server
+static files,serilog,publish,iis,VSCode,dotnet,EntityFramework,InMemory,CSharp,git,HttpClient,REST,WebApi,vscode-solution-explorer,Codeium
+
+  &lt;ItemGroup&gt;
+    &lt;None Update="www_root\*.html"&gt;
+      &lt;CopyToOutputDirectory&gt;Always&lt;/CopyToOutputDirectory&gt;
+    &lt;/None&gt;
+    &lt;None Update="www_root\img\*.png"&gt;
+      &lt;CopyToOutputDirectory&gt;Always&lt;/CopyToOutputDirectory&gt;
+    &lt;/None&gt;
+    &lt;None Update="www_root\js\*.js"&gt;
+      &lt;CopyToOutputDirectory&gt;Always&lt;/CopyToOutputDirectory&gt;
+    &lt;/None&gt;
+    &lt;None Update="www_root\css\*.css"&gt;
+      &lt;CopyToOutputDirectory&gt;Always&lt;/CopyToOutputDirectory&gt;
+    &lt;/None&gt;
+  &lt;/ItemGroup&gt;
+
+using Microsoft.Extensions.FileProviders;
+
+var cacheMaxAgeSec = 60 * 60 * 24 * 7; // 60s * 60m * 24h * 7d - неделя
+app.UseStaticFiles(new StaticFileOptions{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "www_root")),
+    RequestPath = "",
+    OnPrepareResponse = ctx =&gt;
+    {
+        ctx.Context.Response.Headers.Append(
+                "Cache-Control", $"public, max-age={cacheMaxAgeSec}");
+    },
+});
+
+
+https://serilog.net
+	Flexible, structured events — log file convenience.
+
+Directory.SetCurrentDirectory(Path.GetDirectoryName(Environment.ProcessPath) ?? "");
+
+add package:
+	Serilog
+	Serilog.Extensions.Logging
+	Serilog.Settings.Configuration
+	Serilog.Sinks.Console
+	Serilog.Sinks.File
+
+    "Serilog": {
+        "Using": [ "Serilog.Sinks.File" ],
+        "MinimumLevel": { "Default": "Information" },
+        "WriteTo": [
+            { "Name": "Console" },
+            {
+                "Name": "File",
+                "Args": {
+                    "path": "./logs/log_.txt",
+                    "rollingInterval": "Day",
+                    "rollingIntervalValues": "Day Hour Minute",
+                    "outputTemplate": "{Timestamp:HH:mm:ss.fff} [{Level:u3}] {Message:lj}{NewLine}{Exception}",
+                    "shared": true
+                }
+            }
+        ]
+    },
+
+// Configure Logging:
+using var logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .CreateLogger();
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
+Log.Logger = logger;
+-----------------------------------------------------------------------
+
+продолжение 0004 - publish dotnet core webApi in IIS server
+продолжение 0004 - создание  .NET core WebApi + In Memory EntityFramework, get post
+publish,iis,VSCode,dotnet,EntityFramework,InMemory,CSharp,git,HttpClient,REST,WebApi,vscode-solution-explorer,Codeium
+
+EfWebApiSln
+
+тестовый запуск программы
+http://localhost:5022/swagger/index.html
+
+перед установкой программы надо скачать и установить -
+ASP.NET Core 8.0 Runtime (v8.0.6) - Windows Hosting Bundle Installer
+https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-aspnetcore-8.0.6-windows-hosting-bundle-installer
+
+
+
+dotnet new gitignore
+git init
+add new project - Веб-API ...
+    dotnet new --list 
+    dotnet new "webapi" -lang "C#" -n "TestWebApi" -o "TestWebApi"
+----
+edit launchSettings.json  - "launchBrowser": false,
+
+- создать и подключить к проекту In Memory Database
+  TestWebApi: Install the EF Core packages  Microsoft.EntityFrameworkCore.InMemory
+
+  creating a context class representing the session with the database 
+    public class InMemoryDbContext : DbContext
+    {
+      public DbSet<Product> Products { get; set; }
+
+      public InMemoryDbContext(DbContextOptions<InMemoryDbContext> options): base(options)
+      { Database.EnsureCreated();   // создаем базу данных при первом обращении
+      }
+
+      для того чтоб база была изначально не пустая в InMemoryDbContext добавим
+      protected override void OnModelCreating(ModelBuilder modelBuilder)
+      {
+        modelBuilder.Entity<Product>().HasData(
+          new Product { Id = 1, Name = "зелень", Price = 37 },
+          new Product { Id = 2, Name = "овощи ", Price = 41 },
+        );
+      }
+    }
+
+  builder.Services.AddDbContext<InMemoryDbContext>(options =>options.UseInMemoryDatabase("InMemoryDb"));
+  
+  app.MapPost("/product", ([FromBody] Product _product, InMemoryDbContext context) => ...
+
+==========================================
+Используется:
+  Visual Studio Code
+
+https://dotnet.microsoft.com/en-us/download/dotnet/sdk-for-vs-code?utm_source=vs-code&amp;utm_medium=referral&amp;utm_campaign=sdk-install
+  dotnet
+
+плагинс
+  C# Dev Kit
+  C# for Visual Studio Code /Base language support for C#
+  .NET Install Tool
+  REST Client
+  vscode-solution-explorer
+  Codeium: AI Coding
+  ? IntelliCode for C# Dev Kit
+
+- dotnet commands:
+    >dotnet --version
+    >dotnet --info
+    >dotnet -h new
+    >dotnet new gitignore
+
+create solution
+  >dotnet new sln -n "MyWebApi"
+
+
+На основе:
+  VS Code Tutorial For C# Developers
+  https://www.youtube.com/watch?v=O4dCgYicoDg

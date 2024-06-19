@@ -1,0 +1,45 @@
+@TestWebApi_HostAddress = http://localhost:5022
+
+### GET products
+GET {{TestWebApi_HostAddress}}/products
+Accept: application/json
+
+### GET product
+GET {{TestWebApi_HostAddress}}/product/5
+Accept: application/json
+
+### POST product
+POST {{TestWebApi_HostAddress}}/product
+content-type: application/json; charset=UTF-8
+
+{
+  "name": "мясо",
+  "price": 199
+}
+
+### GET index.html
+GET {{TestWebApi_HostAddress}}/index2.html
+Accept: text/html
+
+###
+
+# validation
+### POST product добавление - bad price, name, BuyerEmail
+POST {{TestWebApi_HostAddress}}/product
+content-type: application/json; charset=UTF-8
+
+{
+  "name": "мяс",
+  "price": 10,
+  "BuyerEmail": "@mail.ru"
+}
+
+### POST product редактирование - bad price
+POST {{TestWebApi_HostAddress}}/product
+content-type: application/json; charset=UTF-8
+
+{
+  "id": 9,
+  "name": "Кетчуп",
+  "price": 11
+}

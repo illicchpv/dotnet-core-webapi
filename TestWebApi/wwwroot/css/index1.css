@@ -1,0 +1,7 @@
+body{
+    background-color: cadetblue;
+}
+.imgBlock::after{
+    content: 'css loaded';
+    margin-left: 100px;
+}

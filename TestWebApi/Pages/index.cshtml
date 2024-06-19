@@ -1,0 +1,28 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "page:index";
+    ViewData["Date"] = DateTime.Now.ToString("yyy-MM-dd hh:mm:ss");
+    ViewData["DateUtc"] = DateTime.UtcNow.ToString("yyy-MM-dd hh:mm:ss");
+}
+ 
+@section atHeaderEnd {
+    <link href="~/css/index1.css" rel="stylesheet">
+}
+
+@* -----------------RenderBody-------------- *@
+    Dinamic Razor Document - @(ViewData["Title"]) <br><br>
+    local date: @(ViewData["Date"]) <br><br>
+    utc&nbsp;&nbsp; date: @(ViewData["DateUtc"]) <br><br>
+
+    <p>@IndexModel.getAplusB(101, 201)</p>   
+
+    @{
+        var s = "<hr><span>aaaa</span><hr>";
+        <div>@Html.Raw(s)</div>
+    }
+    @(TestClass.getDate())
+    
+    <div>
+        <img src="~/img/backend.png" alt="">
+    </div>
