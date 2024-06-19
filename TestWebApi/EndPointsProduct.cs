@@ -38,8 +38,6 @@ public static class EndPointsProduct
             {
                 if (_product.Name != "") product.Name = _product.Name;
                 if (_product.Price > 0) product.Price = _product.Price;
-                if (_product.BuyerId != null) product.BuyerId = _product.BuyerId;
-                if (_product.BuyerEmail != null) product.BuyerEmail = _product.BuyerEmail;
 
                 var validattion = await validator.ValidateAsync(product);
                 if (!validattion.IsValid)
@@ -69,16 +67,6 @@ public static class EndPointsProduct
     }
 }
 
-public class Product
-{
-    public int Id { get; set; }
-    public string Name { get; set; } = "";
-    public decimal Price { get; set; } = -1;
-
-    public int? BuyerId { get; set; }
-    public string? BuyerEmail { get; set; }
-}
-
 public class ProductValidator : AbstractValidator<Product>
 {
     public ProductValidator()
@@ -86,6 +74,5 @@ public class ProductValidator : AbstractValidator<Product>
         RuleFor(x => x.Name).NotEmpty().MinimumLength(4).MaximumLength(8); // .WithMessage("Длина имени должна быть от 4 до 8");
         RuleFor(x => x.Name).Must(nam => Regex.IsMatch(nam, "^[A-ZА-Я][a-zа-я]+$")); //.WithMessage("Первая заглавная остальные маленькие");
         RuleFor(x => x.Price).GreaterThan(10); //.WithMessage("Только за деньги(>10) Да ");
-        RuleFor(x => x.BuyerEmail).EmailAddress(); //.WithMessage("Некорректная почта");
     }
 }

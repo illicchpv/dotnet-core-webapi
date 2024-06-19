@@ -15,14 +15,4 @@
     local date: @(ViewData["Date"]) <br><br>
     utc&nbsp;&nbsp; date: @(ViewData["DateUtc"]) <br><br>
 
-    <p>@IndexModel.getAplusB(101, 201)</p>   
 
-    @{
-        var s = "<hr><span>aaaa</span><hr>";
-        <div>@Html.Raw(s)</div>
-    }
-    @(TestClass.getDate())
-    
-    <div>
-        <img src="~/img/backend.png" alt="">
-    </div>

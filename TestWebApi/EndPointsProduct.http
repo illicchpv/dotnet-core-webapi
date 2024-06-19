@@ -24,14 +24,13 @@ Accept: text/html
 ###
 
 # validation
-### POST product добавление - bad price, name, BuyerEmail
+### POST product добавление - bad price, name
 POST {{TestWebApi_HostAddress}}/product
 content-type: application/json; charset=UTF-8
 
 {
   "name": "мяс",
   "price": 10,
-  "BuyerEmail": "@mail.ru"
 }
 
 ### POST product редактирование - bad price

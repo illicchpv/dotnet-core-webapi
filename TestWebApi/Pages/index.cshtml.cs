@@ -15,7 +15,4 @@ public class IndexModel : PageModel
         Log.Warning("OnGet");
     }
 
-    public static string getAplusB(int a, int b){
-        return "a + b = " + (a + b);
-    }
 }
