@@ -1,0 +1,100 @@
+<!-- @page "{BuyerId:int?}"
+@model IndexModel
+@{
+@* Log.Warning("index.cshtml"); *@
+
+ViewData["Title"] = "page:index";
+}
+
+@section atHeaderEnd { -->
+<link href="~/cssPages/index.css" rel="stylesheet">
+<script src="~/jsPages/index.js" defer></script>
+<!-- } -->
+
+<!-- @* -----------------RenderBody-------------- *@ -->
+<div class="container">
+    <h1>Dinamic Razor Document - @(ViewData["Title"])</h1>
+    <h3>date local:@(ViewData["Date"]) &nbsp; utc: @(ViewData["DateUtc"])</h3>
+</div>
+<hr>
+
+<div class="container">
+    <div class="products">
+        <!-- @for (var i = 0; i < Model.products.Count; i++){ var item=Model.products[i]; <div class="productRow @(i%2 == 0 ? " bg" : "" )"> -->
+        <span>
+            <i>@(item.Id). </i>
+            <!-- @if(Model.selectedBuyer != null){ -->
+            <span>
+                <span class="pmBtn" onclick="location='./@(Model.selectedBuyer.Id)?del=@(item.Id)'">-</span>
+                <span class="pmBtn" onclick="location='./@(Model.selectedBuyer.Id)?add=@(item.Id)'">+</span>
+            </span>
+            <!-- } -->
+        </span>
+        <b>@(item.Name)</b>
+        <div>@(item.Price) ₽</div>
+    </div>
+    <!-- } -->
+</div>
+</div>
+<hr>
+
+<div class="container">
+    <div class="buyers">
+        <!-- @for (var i = 0; i < Model.buyers.Count; i++){ var item=Model.buyers[i]; dynamic rr=Model.getBuyerProductsInfo(item.Id); var sel=Model.selectedBuyer !=null && item.Id==Model.selectedBuyer.Id ? "selected" : "" ; <div class="buyersRow @(sel) @(i%2 == 0 ? " bg" : "" )" onclick="location='./@(item.Id)'"> -->
+        <span>
+            <i>@(item.Id). </i>
+            <b>@(item.Name)</b>
+        </span>
+        <div>@(rr.sum) ₽</div>
+    </div>
+    <!-- } -->
+</div>
+</div>
+<hr>
+
+<!-- @if(Model.selectedBuyer != null){ -->
+<div class="container">
+    <!-- @* корзина выбранного покупателя *@ -->
+    <div class="selectedBuyer">
+        <div class="selectedBuyer__name">
+            <b>selected:</b>
+            @(Model.selectedBuyer.Id).
+        </div>
+        <div class="selectedBuyer__email">@(Model.selectedBuyer.BuyerEmail)</div>
+    </div>
+
+    <!-- @* selectedPurchases *@ -->
+
+    <!-- @if(Model.selectedPurchases.Count > 0){
+    decimal sum = 0;
+    var i = 0;
+
+    @foreach(var pr in Model.selectedPurchases){
+    sum += pr.Sum;
+    @* Log.Warning($"i ----- {i}"); @(i%2 == 0 ? " bg" : "") *@ -->
+
+    <div class="prRow @(i%2 == 0 ? " bg" : "" )">
+        <div class="prRow__name">
+            <i>@(pr.ProductId). </i>
+            <!-- @pr.Name -->
+        </div>
+        <div class="prRow__price">
+            <span>@pr.Price * @pr.ProductCount</span>
+            <span>
+                <span class="pmBtn" onclick="location='./@(Model.selectedBuyer.Id)?del=@(pr.ProductId)'">-</span>
+                <span class="pmBtn" onclick="location='./@(Model.selectedBuyer.Id)?add=@(pr.ProductId)'">+</span>
+            </span>
+        </div>
+        <div class="prRow__sum">@pr.Sum ₽</div>
+
+    </div>
+
+    <!-- i++;
+    } -->
+    <div>всего @sum ₽</div>
+
+    <!-- } else{ -->
+    <div> Нет покупок</div>
+    <!-- } -->
+</div>
+<!-- } -->

@@ -1,18 +1,173 @@
-@page
+@page "{BuyerId:int?}"
+@* @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers *@
 @model IndexModel
 @{
+    Log.Warning("index.cshtml");
+
     ViewData["Title"] = "page:index";
-    ViewData["Date"] = DateTime.Now.ToString("yyy-MM-dd hh:mm:ss");
-    ViewData["DateUtc"] = DateTime.UtcNow.ToString("yyy-MM-dd hh:mm:ss");
 }
- 
+
 @section atHeaderEnd {
-    <link href="~/css/index1.css" rel="stylesheet">
+    <link href="~/cssPages/index.css" rel="stylesheet">
+    <script src="~/jsPages/index.js" defer></script>
 }
 
-@* -----------------RenderBody-------------- *@
-    Dinamic Razor Document - @(ViewData["Title"]) <br><br>
-    local date: @(ViewData["Date"]) <br><br>
-    utc&nbsp;&nbsp; date: @(ViewData["DateUtc"]) <br><br>
+<!-- -----------------RenderBody-------------- -->
+
+@* пример работы с post формой *@
+@* <form method="post" style="margin-bottom:20px">
+    <div><input type="text" name="FirstName" value="aa111aa"/></div>
+    <div><input type="text" name="LastName" value="bb222bb"/>
+        <input type="submit" value=" send " />
+    </div>
+</form>  *@
 
 
+    <div class="header">
+        <h1>Dynamic Razor Document - @(ViewData["Title"])</h1>
+        <h3>date local:@(ViewData["Date"]) &nbsp; utc: @(ViewData["DateUtc"])</h3>
+    </div>
+
+    <div class="section1">
+        <div class="section1__left">
+            <div class="scrollBlock">
+                <div class="section1__leftContent">
+    <div class="buyers">
+        <div class="row">
+            <i></i>
+            <h4>покупатели и их траты</h4><i></i>
+        </div>
+        <div class="row row_hdr">
+            <h4>Id. имя</h4>
+            <h4>сумма</h4>
+        </div>        
+
+@for (var i = 0; i < Model.buyers.Count; i++){
+            var item = Model.buyers[i];
+            dynamic rr = Model.getBuyerProductsInfo(item.Id);
+            var sel = Model.selectedBuyer != null && item.Id == Model.selectedBuyer.Id ? "selected" : "";
+
+            <div class="buyersRow row clickable @(sel) @(i%2 == 0 ? "bg" : "")" 
+                onclick="@(Model.selectedBuyer?.Id == item.Id ? "location='./'" : $"location='./{item.Id}'") ">
+                <span>
+                    <i>@(item.Id). </i>
+                    <b>@(item.Name)</b>
+                </span>
+                <div>@(rr.sum) ₽</div>
+            </div>
+}
+    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section1__right">
+            <div class="scrollBlock">
+                <div class="section1__rightContent">
+    <div class="products">
+        <div class="row">
+            <i></i>
+            <h4>имеющиеся продукты</h4><i></i>
+        </div>
+        <div class="row row_hdr">
+            <h4>Id. название</h4>
+            <h4>цена</h4>
+        </div>
+
+@for (var i = 0; i < Model.products.Count; i++){
+            var item = Model.products[i];
+
+        <div class="row @(i%2 == 0 ? " bg" : "")">
+            <div>
+                <i>@(item.Id). </i>
+    @if(Model.selectedBuyer != null){
+                <span>
+                    <span class="pmBtn"
+                        onclick="location='./@(Model.selectedBuyer.Id)?del=@(item.Id)'"
+                    >-</span>
+                    <span class="pmBtn"
+                        onclick="location='./@(Model.selectedBuyer.Id)?add=@(item.Id)'"
+                    >+</span>
+                </span>
+    }                
+                <b>@(item.Name)</b>
+            </div>
+            <div>@(item.Price) ₽</div>
+        </div>
+}
+    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="cart">
+@if(Model.selectedBuyer != null){
+    decimal sumTotal = 0;
+
+        <div class="cart__title">
+    <!-- корзина выбранного покупателя -->
+    <div class="selectedBuyer row_hdr">
+        <div class="selectedBuyer__name">
+            <b>selected:</b> 
+            <b>@(Model.selectedBuyer.Id).</b> 
+            <b>@(Model.selectedBuyer.Name)</b>
+        </div>
+        <div class="selectedBuyer__email">@(Model.selectedBuyer.BuyerEmail)</div>
+    </div>
+            
+        </div>
+        <div class="cart__content">
+            <div class="scrollBlock">
+    @if(Model.selectedPurchases.Count > 0){
+        var i = 0;
+
+        <div class="purchases">
+            <div class="purItem row row_hdr">
+                <div class="purItem__name"><i>1.</i> название продукта</div>
+                <div class="purItem__price">price * count</div>
+                <div class="purItem__sum">total</div>
+            </div>
+
+        @foreach(var pr in Model.selectedPurchases){
+                sumTotal += pr.Sum;
+                <!-- Log.Warning($"i ----- {i}");  @(i%2 == 0 ? " bg" : "") -->
+
+                <div class="purItem row @(i%2 == 0 ? "bg" : "")">
+                    <div class="purItem__name"><i>@(pr.ProductId).</i> @(pr.Name) </div>
+                    
+                    <div class="prRow__price">
+                        <span class="purItem__priceSz">@pr.Price * @pr.ProductCount</span>
+                        <span>
+                            <span class="pmBtn"
+                                onclick="location='./@(Model.selectedBuyer.Id)?del=@(pr.ProductId)'"
+                            >-</span>
+                            <span class="pmBtn"
+                                onclick="location='./@(Model.selectedBuyer.Id)?add=@(pr.ProductId)'"
+                            >+</span>
+                        </span>
+                    </div>
+
+                    <div class="purItem__sum">@pr.Sum ₽</div>
+                </div>
+
+                i++;
+        }
+
+        </div>
+
+    } else{
+        <div class="row">
+            <i></i><h3>нет покупок</h3><i></i>
+        </div>
+    }
+            </div>
+        </div>
+        <div class="cart__footer">
+            <div class="sumTotal__val">итого @(sumTotal) ₽</div>
+        </div>
+}
+    </div>
+
+    <div class="footer">
+        <h4>IndexModel была создана @(IndexModel.createCount) раз</h4>
+    </div>

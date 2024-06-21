@@ -1,3 +1,17 @@
+0013 продолжение 0012 - реализация задачи - Razor pages + dotnet core webApi project
+
+OnGet, OnPost, Mvc.TagHelpers,Razor pages,Validation,FluentValidation,static files,serilog,publish,iis,VSCode,dotnet,EntityFramework,InMemory,CSharp,git,HttpClient,REST,WebApi,vscode-solution-explorer,Codeium
+
+Применённый в реализации задачи (с.м. 0012) метод, с одной стороны довольно удобен и прост, 
+но мне кажется, подходит только для небольших, простых страниц. Т.к. 
+при всяком изменении (например выбран другой покупатель) 
+идёт запрос на сервер и обновляется вся страничка.
+Большой трафик и нагрузка на сервер.
+
+исходники:
+https://github.com/illicchpv/dotnet-core-webapi
+
+================================================
 0012 продолжение 0011 - постановка задачи Razor pages + dotnet core webApi project
 
 исходники:

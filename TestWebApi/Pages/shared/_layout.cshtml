@@ -1,17 +1,26 @@
+@{
+    Log.Warning("_layout.cshtml");
+}
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WebApi | @(ViewData["Title"])</title>
 
+    <link href="~/css/common.css" rel="stylesheet">
+    <script src="~/js/common.js" defer></script>    
+
     @RenderSection("atHeaderEnd", required: false)
 </head>
+
 <body>
 
-<!-- RenderBody -->
-@RenderBody()
-<!-- /RenderBody -->
+    <!-- RenderBody -->
+    @RenderBody()
+    <!-- /RenderBody -->
 
 </body>
+
 </html>
