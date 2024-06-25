@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link href="./index.css" rel="stylesheet" />
+
+    <!-- ... -->
+
+    <script src="./index.js"></script>
+
+    <!-- --- -->
+    <link href="app-index.css" rel="stylesheet">
+
+    <!--  -->
+    <!-- https://legacy.reactjs.org/docs/cdn-links.html -->
+    <!-- <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+	<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script> -->
+    <!-- https://babeljs.io/setup#installation -->
+    <!-- <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script> -->
+    <script src="./libs/babel.js"></script>
+    <script src="./libs/react.js"></script>
+    <script src="./libs/react-dom.js"></script>
+
+    <script src="./components/Home.js" data-plugins="transform-modules-umd" type="text/babel" data-type="module"></script>
+    <script src="./components/Production.js" data-plugins="transform-modules-umd" type="text/babel" data-type="module"></script>
+    <script src="./components/About.js" data-plugins="transform-modules-umd" type="text/babel" data-type="module"></script>
+
+    <script src="./components/App.js" data-plugins="transform-modules-umd" type="text/babel" data-type="module"></script>
+
+    <script src="./app-index.js" data-plugins="transform-modules-umd" type="text/babel" data-type="module"></script>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>site header <span class="isOk"></span></h1>
+        </header>
+
+        <div id="root"></div>
+    </div>
+    <hr>
+
+    <div class="container">
+        <main>
+            <h2>site main</h2>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa officia nam aliquid, aspernatur tempore voluptates dolores consectetur libero reiciendis consequuntur id explicabo magni minus quibusdam sapiente harum ad necessitatibus optio.</p>
+        </main>
+    </div>
+    <hr>
+
+    <div class="container">
+        <footer>
+            <h2>site footer</h2>
+        </footer>
+    </div>
+</body>
+
+</html>

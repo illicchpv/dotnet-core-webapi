@@ -1,3 +1,12 @@
+0014 продолжение 0013 - встраиваем react-cdn в статическую страницу. без npm, node_modules, package.json...
+
+с видео получилась накладка. с 23 минуты что-то пошло не так и то что надо было не записалось. 
+Но там особо ничего интересного нет, навожу "красоту" и добавляю немного интерактивности 
+используя useState.
+
+react, reactjs, cdn, static page,Razor pages, WebApi, CSharp
+
+
 0013 продолжение 0012 - реализация задачи - Razor pages + dotnet core webApi project
 
 OnGet, OnPost, Mvc.TagHelpers,Razor pages,Validation,FluentValidation,static files,serilog,publish,iis,VSCode,dotnet,EntityFramework,InMemory,CSharp,git,HttpClient,REST,WebApi,vscode-solution-explorer,Codeium

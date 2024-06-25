@@ -1,0 +1,19 @@
+.appBlock {
+    color: blue;
+    outline: 3px solid lightgreen;
+    outline-offset: 5px;
+    border-radius: 20px;
+    padding: 0 10px;
+
+    .row {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+    }
+    button{
+        font-size: inherit;
+        cursor: pointer;
+        margin: 5px;
+        width: 2em;
+    }
+}
